@@ -12,7 +12,8 @@ export default class App extends Component {
     nextId = 1;
 
     state = {
-        todoData: []
+        todoData: [],
+        filter: ''
     };
 
     createItem = (label) => {
@@ -25,10 +26,11 @@ export default class App extends Component {
     };
 
     addItem = (label) => {
-        this.setState(({todoData}) => {
+        this.setState(({todoData, ...stuff}) => {
             const newItem = this.createItem(label);
             return {
-                todoData: [...todoData, newItem]
+                todoData: [...todoData, newItem],
+                stuff
             };
         });
     };
@@ -61,7 +63,7 @@ export default class App extends Component {
     });
 
     deleteItem = (id) => {
-        this.setState(({ todoData }) => {
+        this.setState(({ todoData, ...stuff }) => {
             const ind = todoData.findIndex((el) => el.id === id);
             const changedData = [
                 ...todoData.slice(0, ind),
@@ -69,23 +71,51 @@ export default class App extends Component {
             ];
             
             return {
-                todoData: changedData
+                todoData: changedData,
+                stuff
             };
         });
     };
 
+    setFilter = (filter) => {
+        this.setState((state) => {
+            return {
+                state,
+                filter
+            };
+        });
+    };
+
+    filterItems = (items, filter) => {
+        let filtered = items;
+        if (filter !== '') {
+            filtered = filtered
+                       .filter(({ label }) => label.startsWith(filter));
+        }
+        return filtered;
+    };
+
     render() {
+        const items = this.state.todoData;
+        const itemCount = items.length;
+        const doneCount = items
+                          .filter(({ done }) => done)
+                          .length;
+
+        const filtered = this.filterItems(items, this.state.filter);
+
         return (
             <div className='app'>
-                <AppHeader />
-                <SearchPanel />
+                <AppHeader itemCount={itemCount}
+                           doneCount={doneCount} />
+                <SearchPanel onFilter={this.setFilter} />
                 <TodoList
-                  items={this.state.todoData}
-                  onDone={ this.setItemDone }
-                  onImportant={ this.setItemImportant }
-                  onDelete={ this.deleteItem } />
+                  items={filtered}
+                  onDone={this.setItemDone}
+                  onImportant={this.setItemImportant}
+                  onDelete={this.deleteItem} />
                 <TodoItemAddForm
-                    onAdd={ this.addItem }
+                    onAdd={this.addItem}
                 />
             </div>
         );

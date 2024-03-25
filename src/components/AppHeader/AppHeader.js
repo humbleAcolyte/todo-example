@@ -1,9 +1,18 @@
 import React from "react";
 
-const AppHeader = () => {
+import './AppHeader.css';
+
+const AppHeader = ({ itemCount = 0, doneCount = 0 }) => {
+    const undoneCount = itemCount - doneCount;
+
     return (
-        <div>
-            <h1>Todo List</h1>
+        <div className='app-header'>
+            <h1>To-Do List</h1>
+            <div>
+                <span>{undoneCount}</span>
+                <span>{doneCount}</span>
+                <span>{itemCount}</span>
+            </div>
         </div>
     );
 };

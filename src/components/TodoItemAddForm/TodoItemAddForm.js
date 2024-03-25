@@ -25,9 +25,9 @@ export default class TodoItemAddForm extends Component {
             <form onSubmit={ this.onSubmit }>
                 <input type="text"
                        onChange={ this.onLabelChange }
-                       placeholder="To-Do"
+                       placeholder="New To-Do"
                        value={ this.state.label }/>
-                <button>Добавить</button>
+                <button>Add</button>
             </form>
         );
     };
